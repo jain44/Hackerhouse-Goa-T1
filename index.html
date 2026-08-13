@@ -1538,6 +1538,25 @@
                 alert("Please click 'STAMP MY PASS' first!");
                 return;
             }
+
+            // 1. Immediately open new tab SYNCHRONOUSLY to bypass browser popup blockers!
+            const xWindow = window.open('about:blank', '_blank');
+            if (xWindow) {
+                xWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head><title>Opening X...</title></head>
+                    <body style="background:#123c2a;color:#ffd31a;font-family:'Courier New',monospace;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">
+                        <div style="text-align:center;padding:20px;">
+                            <div style="font-size:36px;margin-bottom:12px;">🚀</div>
+                            <h2 style="font-size:18px;margin:0 0 8px 0;letter-spacing:1px;">FRAMING YOUR BUILDER PASS...</h2>
+                            <p style="color:#fff8e9;font-size:13px;opacity:0.85;margin:0;">Redirecting to X (Twitter) in a moment...</p>
+                        </div>
+                    </body>
+                    </html>
+                `);
+            }
+
             const btn = document.getElementById('btnShare');
             if (btn) { btn.innerText = '⏳ PREPARING CARD...'; }
 
@@ -1546,6 +1565,8 @@
             const builderTitle = titleInput.value.toUpperCase() || 'THE BUILD ARCHITECT';
             const builderId    = displayId.innerText;
             const caption = `🚀 Just minted my Builder Pass for Hack House Goa 2026!\n\n🪴 ${builderName} — ${builderRole}\n⚡ Class: ${builderTitle}\n🆔 ${builderId}\n\n4 Days. One mission. Ship or get shipped. 🌴\n\nSee you in Goa. Let's build the future.\n\n#HHGoa2026 #FrameInGoa #BuildInGoa #HackerHouseGoa`;
+            const currentUrl = window.location.href.startsWith('http') ? window.location.href : 'https://hackerhouse-goa-t1.vercel.app/';
+            const tweetUrl = `https://x.com/intent/post?text=${encodeURIComponent(caption)}&url=${encodeURIComponent(currentUrl)}`;
 
             const origAnimation = badgeElement.style.animation;
             const origTransform = badgeElement.style.transform;
@@ -1554,7 +1575,7 @@
             badgeElement.style.transform = 'none';
             badgeElement.style.transition = 'none';
             badgeElement.offsetHeight;
-            await new Promise(r => setTimeout(r, 150));
+            await new Promise(r => setTimeout(r, 100));
 
             try {
                 const canvas = await html2canvas(badgeElement, {
@@ -1574,24 +1595,7 @@
                 for (let i = 0; i < raw.length; ++i) { uInt8Array[i] = raw.charCodeAt(i); }
                 const blob = new Blob([uInt8Array], { type: 'image/png' });
 
-                const file = new File([blob], filename, { type: 'image/png' });
-
-                // 1. Try Native Web Share API (Attaches PNG file directly into X app on mobile/supported browsers!)
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    try {
-                        await navigator.share({
-                            files: [file],
-                            title: 'HH Goa 2026 Builder Pass',
-                            text: caption
-                        });
-                        showToast("✨ PNG Card directly attached to X post!");
-                        return;
-                    } catch (e) {
-                        if (e.name === 'AbortError') return;
-                    }
-                }
-
-                // 2. Fallback: Download PNG file automatically
+                // 2. Download PNG file automatically
                 const link = document.createElement('a');
                 link.download = filename;
                 link.href = dataUrl;
@@ -1608,20 +1612,26 @@
                     } catch (err) {}
                 }
 
-                // 4. Open X / Twitter Web Intent with pre-filled tweet & URL for live graphic preview
-                const currentUrl = window.location.href.startsWith('http') ? window.location.href : 'https://hackerhouse-goa-t1.vercel.app/';
-                const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(caption)}&url=${encodeURIComponent(currentUrl)}`;
-                window.open(tweetUrl, '_blank');
+                // 4. Redirect the opened window to X post URL
+                if (xWindow && !xWindow.closed) {
+                    xWindow.location.href = tweetUrl;
+                } else {
+                    window.location.href = tweetUrl;
+                }
 
                 // 5. Show on-screen toast
                 showToast(copied 
                     ? "📸 PNG Card downloaded & copied! Press Ctrl+V (or Cmd+V) to paste the card into your post."
-                    : "📥 PNG Card downloaded! Link preview attached to X post."
+                    : "📥 PNG Card downloaded! Preview attached to X post."
                 );
 
             } catch (err) {
                 console.error('Share image failed:', err);
-                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(caption)}`, '_blank');
+                if (xWindow && !xWindow.closed) {
+                    xWindow.location.href = tweetUrl;
+                } else {
+                    window.location.href = tweetUrl;
+                }
             } finally {
                 badgeElement.style.animation = origAnimation;
                 badgeElement.style.transform = origTransform;
