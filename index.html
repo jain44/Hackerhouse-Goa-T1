@@ -1574,7 +1574,24 @@
                 for (let i = 0; i < raw.length; ++i) { uInt8Array[i] = raw.charCodeAt(i); }
                 const blob = new Blob([uInt8Array], { type: 'image/png' });
 
-                // 1. Download PNG file automatically
+                const file = new File([blob], filename, { type: 'image/png' });
+
+                // 1. Try Native Web Share API (Attaches PNG file directly into X app on mobile/supported browsers!)
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    try {
+                        await navigator.share({
+                            files: [file],
+                            title: 'HH Goa 2026 Builder Pass',
+                            text: caption
+                        });
+                        showToast("✨ PNG Card directly attached to X post!");
+                        return;
+                    } catch (e) {
+                        if (e.name === 'AbortError') return;
+                    }
+                }
+
+                // 2. Fallback: Download PNG file automatically
                 const link = document.createElement('a');
                 link.download = filename;
                 link.href = dataUrl;
@@ -1582,7 +1599,7 @@
                 link.click();
                 document.body.removeChild(link);
 
-                // 2. Copy PNG image blob to clipboard if supported
+                // 3. Copy PNG image blob to clipboard if supported
                 let copied = false;
                 if (navigator.clipboard && window.ClipboardItem) {
                     try {
@@ -1591,15 +1608,15 @@
                     } catch (err) {}
                 }
 
-                // 3. Open X / Twitter Web Intent with pre-filled tweet & URL for live graphic preview
+                // 4. Open X / Twitter Web Intent with pre-filled tweet & URL for live graphic preview
                 const currentUrl = window.location.href.startsWith('http') ? window.location.href : 'https://hackerhouse-goa-t1.vercel.app/';
                 const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(caption)}&url=${encodeURIComponent(currentUrl)}`;
                 window.open(tweetUrl, '_blank');
 
-                // 4. Show on-screen toast
+                // 5. Show on-screen toast
                 showToast(copied 
                     ? "📸 PNG Card downloaded & copied! Press Ctrl+V (or Cmd+V) to paste the card into your post."
-                    : "📥 PNG Card downloaded! Attach the downloaded PNG to your post on X."
+                    : "📥 PNG Card downloaded! Link preview attached to X post."
                 );
 
             } catch (err) {

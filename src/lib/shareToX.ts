@@ -36,8 +36,35 @@ export async function shareToX(
     const filename = getFilename(name, format);
     const dataUrl = await generateCardImage(element, format);
     const blob = dataUrlToBlob(dataUrl);
+    const file = new File([blob], filename, { type: 'image/png' });
 
-    // 2. Automatically trigger PNG download so user has the card image
+    // 2. Try native Web Share API (Attaches PNG file directly into X app on mobile/supported browsers!)
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({
+          files: [file],
+          title: 'HH Goa 2026 Builder ID',
+          text: caption,
+        });
+        return {
+          sharedViaWebShare: true,
+          copiedImage: false,
+          downloaded: false,
+          message: 'PNG Card directly attached to X post!',
+        };
+      } catch (shareErr: any) {
+        if (shareErr.name === 'AbortError') {
+          return {
+            sharedViaWebShare: true,
+            copiedImage: false,
+            downloaded: false,
+            message: 'Share cancelled.',
+          };
+        }
+      }
+    }
+
+    // 3. Fallback: Automatically trigger PNG download so user has the card image
     downloadImage(dataUrl, filename);
 
     // 3. Copy PNG image blob to clipboard (allows user to Ctrl+V paste PNG in Twitter composer!)
