@@ -18,7 +18,8 @@ export async function shareToX(
   format: 'id-card' | 'pfp' = 'id-card'
 ): Promise<ShareResult> {
   const caption = getCaptionText(name, builderTitle);
-  const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(caption)}`;
+  const currentUrl = typeof window !== 'undefined' && window.location.href.startsWith('http') ? window.location.href : 'https://hackerhouse-goa-t1.vercel.app/';
+  const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(caption)}&url=${encodeURIComponent(currentUrl)}`;
 
   if (!element) {
     window.open(tweetUrl, '_blank');

@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HH Goa 2026 | Builder Pass</title>
+    <meta name="title" content="HH Goa 2026 | Builder Pass">
+    <meta name="description" content="Mint your official HH Goa 2026 builder identity card. 4 Days. One mission. Ship or get shipped.">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="HH Goa 2026 | Builder Pass">
+    <meta property="og:description" content="Mint your official HH Goa 2026 builder identity card. 4 Days. One mission. Ship or get shipped.">
+    <meta property="og:image" content="https://hackerhouse-goa-t1.vercel.app/powered-by-banner.png">
+
+    <!-- Twitter Card (Large Image Preview on X) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="HH Goa 2026 | Builder Pass">
+    <meta name="twitter:description" content="Mint your official HH Goa 2026 builder identity card. 4 Days. One mission. Ship or get shipped.">
+    <meta name="twitter:image" content="https://hackerhouse-goa-t1.vercel.app/powered-by-banner.png">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
@@ -1576,8 +1591,10 @@
                     } catch (err) {}
                 }
 
-                // 3. Open X / Twitter Web Intent directly with pre-filled tweet
-                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(caption)}`, '_blank');
+                // 3. Open X / Twitter Web Intent with pre-filled tweet & URL for live graphic preview
+                const currentUrl = window.location.href.startsWith('http') ? window.location.href : 'https://hackerhouse-goa-t1.vercel.app/';
+                const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(caption)}&url=${encodeURIComponent(currentUrl)}`;
+                window.open(tweetUrl, '_blank');
 
                 // 4. Show on-screen toast
                 showToast(copied 
