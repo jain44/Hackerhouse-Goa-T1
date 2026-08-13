@@ -379,7 +379,7 @@ export default function IDCard({
             fontWeight: 'bold',
           }}
         >
-          48 HOURS. ONE COAST. COUNTLESS BUILDS. HACK, SHIP, CONNECT — AND LEAVE YOUR MARK ON GOA.
+          4 DAYS. ONE COAST. COUNTLESS BUILDS. HACK, SHIP, CONNECT — AND LEAVE YOUR MARK ON GOA.
         </div>
 
         {/* Powered By Banner */}
