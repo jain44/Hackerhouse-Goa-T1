@@ -60,3 +60,15 @@ export function getFilename(name: string, format: 'id-card' | 'pfp'): string {
   const suffix = format === 'id-card' ? 'builder-id' : 'pfp';
   return `hh-goa-2026-${sanitizedName}-${suffix}.png`;
 }
+
+export function dataUrlToBlob(dataUrl: string): Blob {
+  const parts = dataUrl.split(';base64,');
+  const contentType = parts[0].split(':')[1] || 'image/png';
+  const raw = window.atob(parts[1]);
+  const uInt8Array = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; ++i) {
+    uInt8Array[i] = raw.charCodeAt(i);
+  }
+  return new Blob([uInt8Array], { type: contentType });
+}
+

@@ -85,9 +85,23 @@ export default function App() {
     }
   }, [format, name]);
 
-  const handleShare = useCallback(() => {
-    shareToX(name, builderTitle);
-  }, [name, builderTitle]);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const handleShare = useCallback(async () => {
+    const exportEl = document.getElementById('card-export-container');
+    setIsGenerating(true);
+    try {
+      const result = await shareToX(name, builderTitle, exportEl, format);
+      if (result.message && !result.sharedViaWebShare) {
+        setToastMessage(result.message);
+        setTimeout(() => setToastMessage(null), 7000);
+      }
+    } catch (err) {
+      console.error('Share to X failed', err);
+    } finally {
+      setIsGenerating(false);
+    }
+  }, [name, builderTitle, format]);
 
   const handleCopyCaption = useCallback(async () => {
     await copyCaption(name, builderTitle);
@@ -109,6 +123,29 @@ export default function App() {
 
   return (
     <div className="min-h-screen relative">
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {toastMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 50, scale: 0.95 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-md w-[92%] bg-[#123c2a] text-[#fff8e9] border-2 border-[#ffd31a] p-4 rounded-xl shadow-2xl flex items-center justify-between space-x-3"
+          >
+            <div className="flex items-center space-x-3 text-xs sm:text-sm font-medium">
+              <span className="text-xl">✨</span>
+              <p>{toastMessage}</p>
+            </div>
+            <button
+              onClick={() => setToastMessage(null)}
+              className="text-[#ffd31a] hover:text-white font-bold text-xs uppercase px-2 py-1"
+            >
+              ✕
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {showSplash && (
           <motion.div

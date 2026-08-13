@@ -1480,18 +1480,90 @@
         }
 
         /* ===== Share on X ===== */
-        function shareOnX() {
+        async function shareOnX() {
             if (!verifiedStamp.classList.contains('active')) {
                 alert("Please click 'STAMP MY PASS' first!");
                 return;
             }
+            const btn = document.getElementById('btnShare');
+            if (btn) { btn.innerText = '⏳ PREPARING CARD...'; }
+
             const builderName  = nameInput.value.toUpperCase() || 'BUILDER';
             const builderRole  = roleInput.value || 'Builder';
             const builderTitle = titleInput.value.toUpperCase() || 'THE BUILD ARCHITECT';
             const builderId    = displayId.innerText;
             const caption = `🚀 Just minted my Builder Pass for Hack House Goa 2026!\n\n🪴 ${builderName} — ${builderRole}\n⚡ Class: ${builderTitle}\n🆔 ${builderId}\n\n48 hours. One mission. Ship or get shipped. 🌴\n\nSee you in Goa. Let's build the future.\n\n#HHGoa2026 #FrameInGoa #BuildInGoa #HackerHouseGoa`;
-            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(caption)}`, '_blank');
+
+            const origAnimation = badgeElement.style.animation;
+            const origTransform = badgeElement.style.transform;
+            const origTransition = badgeElement.style.transition;
+            badgeElement.style.animation = 'none';
+            badgeElement.style.transform = 'none';
+            badgeElement.style.transition = 'none';
+            badgeElement.offsetHeight;
+            await new Promise(r => setTimeout(r, 150));
+
+            try {
+                const canvas = await html2canvas(badgeElement, {
+                    scale: 3, backgroundColor: null, useCORS: true, allowTaint: true, logging: false,
+                    width: badgeElement.offsetWidth, height: badgeElement.offsetHeight,
+                    x: 0, y: 0, scrollX: 0, scrollY: 0,
+                    windowWidth: badgeElement.offsetWidth, windowHeight: badgeElement.offsetHeight,
+                });
+                
+                const dataUrl = canvas.toDataURL('image/png');
+                const filename = `HH_Goa_2026_${nameInput.value.replace(/\s+/g,'_')}.png`;
+
+                // Convert dataUrl to blob
+                const parts = dataUrl.split(';base64,');
+                const raw = atob(parts[1]);
+                const uInt8Array = new Uint8Array(raw.length);
+                for (let i = 0; i < raw.length; ++i) { uInt8Array[i] = raw.charCodeAt(i); }
+                const blob = new Blob([uInt8Array], { type: 'image/png' });
+                const file = new File([blob], filename, { type: 'image/png' });
+
+                // Try Web Share API (mobile/Safari)
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    try {
+                        await navigator.share({ files: [file], title: 'HH Goa 2026 Builder Pass', text: caption });
+                        return;
+                    } catch (e) {
+                        if (e.name === 'AbortError') return;
+                    }
+                }
+
+                // Fallback: download PNG file
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = dataUrl;
+                link.click();
+
+                // Try copying PNG to clipboard
+                let copied = false;
+                if (navigator.clipboard && window.ClipboardItem) {
+                    try {
+                        await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+                        copied = true;
+                    } catch (err) {}
+                }
+
+                alert(copied 
+                    ? "📸 PNG ID Card downloaded & copied to clipboard!\n\nPress Ctrl+V (or Cmd+V) to paste your ID Card directly into your tweet when X opens."
+                    : "📥 PNG ID Card downloaded!\n\nAttach the downloaded PNG file to your post when X opens."
+                );
+
+                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(caption)}`, '_blank');
+            } catch (err) {
+                console.error('Share image failed:', err);
+                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(caption)}`, '_blank');
+            } finally {
+                badgeElement.style.animation = origAnimation;
+                badgeElement.style.transform = origTransform;
+                badgeElement.style.transition = origTransition;
+                if (btn) { btn.innerText = '🚀 POST ON X'; }
+            }
         }
+
 
         /* ===== Intro spark particles ===== */
         (function spawnSparks() {
