@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HH Goa 2026 — Frame Your Builder Identity</title>
+    <style>
+      #hh-preloader{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff8e9;color:#123c2a;font-family:Inter,system-ui,-apple-system,sans-serif;animation:hhPreloaderOut .45s ease 1.35s forwards}
+      #hh-preloader::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(82,151,112,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(82,151,112,.10) 1px,transparent 1px),radial-gradient(rgba(18,60,42,.045) 1px,transparent 1px);background-size:36px 36px,36px 36px,18px 18px}
+      .hh-loader-sun{position:absolute;width:260px;height:260px;border-radius:50%;right:-70px;top:-85px;background:#ffd31a;border:3px solid #123c2a;animation:hhSun 1.5s ease-in-out infinite}
+      .hh-loader-content{position:relative;text-align:center;animation:hhRise .65s ease-out both}
+      .hh-loader-kicker{font-size:10px;font-weight:900;letter-spacing:.35em;color:#ff1683;text-transform:uppercase}
+      .hh-loader-title{margin:16px 0 12px;font-size:clamp(52px,10vw,96px);line-height:.82;font-weight:900;letter-spacing:-.055em;text-transform:uppercase}
+      .hh-loader-title span{color:#ff1683}
+      .hh-loader-tag{display:inline-block;padding:9px 18px;background:#ffd31a;border:2px solid #123c2a;box-shadow:4px 4px 0 #ff1683;font-size:12px;font-weight:900;letter-spacing:.18em;text-transform:uppercase}
+      @keyframes hhRise{from{opacity:0;transform:translateY(18px) scale(.94)}to{opacity:1;transform:none}}
+      @keyframes hhSun{0%,100%{transform:scale(.96) rotate(0)}50%{transform:scale(1) rotate(7deg)}}
+      @keyframes hhPreloaderOut{to{opacity:0;visibility:hidden;pointer-events:none}}
+    </style>
+    <meta name="description" content="Turn your photo into your official HH Goa 2026 builder identity card. No login, instant generation, shareable." />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="hh-preloader" aria-label="Loading Hack House Goa 2026">
+      <div class="hh-loader-sun"></div>
+      <div class="hh-loader-content">
+        <div class="hh-loader-kicker">48 HOURS · GOA · BUILD</div>
+        <div class="hh-loader-title">HACK<br><span>HOUSE</span></div>
+        <div class="hh-loader-tag">Your Builder Frame</div>
+      </div>
+    </div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

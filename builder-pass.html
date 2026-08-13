@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HH Goa 2026 | Builder Pass</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #fff8e9;
+            --bg-mid: #e7f1e8;
+            --card-green: #123c2a;
+            --line-green: #315f4a;
+            --text-light: #123c2a;
+            --yellow: #ffd31a;
+            --magenta: #ff1683;
+            --card-bottom: #fffaf0;
+            --muted: #547364;
+            --neon-glow: 8px 10px 0 rgba(18,60,42,0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; 
+            min-height: 100vh;
+            padding: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ===== Animated Background ===== */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse 600px 400px at 15% 20%, rgba(250, 204, 21, 0.04) 0%, transparent 70%),
+                radial-gradient(ellipse 500px 500px at 85% 75%, rgba(255, 0, 127, 0.04) 0%, transparent 70%),
+                radial-gradient(ellipse 300px 300px at 50% 50%, rgba(26, 74, 56, 0.15) 0%, transparent 70%);
+            animation: bgPulse 8s ease-in-out infinite alternate;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes bgPulse {
+            0% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0.7; transform: scale(1.02); }
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(26, 74, 56, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(26, 74, 56, 0.08) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: 0;
+            pointer-events: none;
+            animation: orbFloat 12s ease-in-out infinite alternate;
+        }
+        .orb-1 { width: 200px; height: 200px; background: rgba(250, 204, 21, 0.06); top: 10%; left: 5%; animation-duration: 10s; }
+        .orb-2 { width: 250px; height: 250px; background: rgba(255, 0, 127, 0.04); bottom: 10%; right: 5%; animation-duration: 14s; animation-delay: -3s; }
+        .orb-3 { width: 150px; height: 150px; background: rgba(26, 74, 56, 0.12); top: 50%; left: 50%; transform: translate(-50%, -50%); animation-duration: 16s; animation-delay: -6s; }
+
+        @keyframes orbFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(15px, -20px) scale(1.1); }
+            66% { transform: translate(-10px, 10px) scale(0.95); }
+            100% { transform: translate(5px, -5px) scale(1.05); }
+        }
+
+        /* ===== PERSONALIZED BUILDER PASS INTRO ANIMATION ===== */
+        .intro-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            overflow: hidden;
+            background: radial-gradient(circle at 50% 40%, #0d723f 0%, #054e28 75%, #023319 100%);
+            padding: 30px 40px;
+            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.6s ease, visibility 0.6s ease;
+        }
+        .intro-screen.hide {
+            transform: translateY(-100%) scale(0.98);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* Laser Scanning Beam */
+        .intro-scan-beam {
+            position: absolute;
+            left: 0; right: 0; top: -10px;
+            height: 4px;
+            background: linear-gradient(90deg, transparent 0%, #ffd31a 20%, #ff1683 50%, #ffd31a 80%, transparent 100%);
+            box-shadow: 0 0 25px #ffd31a, 0 0 50px #ff1683;
+            z-index: 6;
+            animation: laserScan 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+        @keyframes laserScan {
+            0% { top: -5%; opacity: 0; }
+            15% { opacity: 1; }
+            85% { opacity: 1; }
+            100% { top: 105%; opacity: 0; }
+        }
+
+        /* Holographic Ring Backdrop */
+        .intro-holo-ring {
+            position: absolute;
+            width: clamp(280px, 45vw, 520px);
+            aspect-ratio: 1;
+            border: 2px dashed rgba(255, 211, 26, 0.35);
+            border-radius: 50%;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            animation: holoRotate 20s linear infinite;
+            pointer-events: none;
+        }
+        .intro-holo-ring::before {
+            content: '';
+            position: absolute;
+            inset: -12px;
+            border: 1px stroke rgba(255, 22, 131, 0.25);
+            border-radius: 50%;
+            border-style: dotted;
+        }
+        @keyframes holoRotate { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+        /* Top navbar mock in intro */
+        .intro-nav {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 4;
+            animation: introNavFade 0.6s ease-out 0.1s both;
+        }
+        @keyframes introNavFade { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+
+        .intro-nav-logo {
+            font-family: 'Arial Black', Impact, sans-serif;
+            font-size: 14px;
+            color: #ffd31a;
+            line-height: 1.1;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .intro-nav-logo span { display: block; font-size: 10px; color: #ffffff; letter-spacing: 2px; }
+
+        .intro-nav-links {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 2px;
+        }
+
+        .intro-apply-btn {
+            background-color: #ffd31a;
+            color: #086938;
+            padding: 8px 22px;
+            font-family: Georgia, serif;
+            font-weight: 900;
+            font-size: 13px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: 2px solid #ff1683;
+            box-shadow: 0 0 12px rgba(255, 22, 131, 0.4);
+            animation: pulseApply 2s infinite alternate;
+        }
+        @keyframes pulseApply { 0% { transform: scale(1); } 100% { transform: scale(1.04); } }
+
+        /* Background grid pattern matching site */
+        .intro-grid {
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 45px 45px;
+            z-index: 1;
+        }
+
+        /* Center Hero Banner Area */
+        .intro-center-hero {
+            position: relative;
+            z-index: 4;
+            width: 100%;
+            max-width: 1100px;
+            text-align: center;
+            margin: auto 0;
+        }
+
+        .intro-pass-badge-pill {
+            display: inline-block;
+            background: rgba(255, 211, 26, 0.12);
+            border: 1px solid #ffd31a;
+            color: #ffd31a;
+            padding: 5px 18px;
+            border-radius: 30px;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            box-shadow: 0 0 15px rgba(255, 211, 26, 0.2);
+            animation: introFadeUp 0.5s ease-out 0.15s both;
+        }
+        @keyframes introFadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+        .intro-hero-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .intro-hacker-text {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: clamp(48px, 11vw, 130px);
+            font-weight: 900;
+            color: #ffd31a;
+            letter-spacing: -0.04em;
+            line-height: 0.9;
+            text-transform: uppercase;
+            animation: slideInLeft 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
+        }
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-60px); } to { opacity: 1; transform: translateX(0); } }
+
+        .intro-house-text {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: clamp(48px, 11vw, 130px);
+            font-weight: 900;
+            color: #ffd31a;
+            letter-spacing: -0.04em;
+            line-height: 0.9;
+            text-transform: uppercase;
+            animation: slideInRight 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
+        }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(60px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* The iconic pink Devanagari GOA text */
+        .intro-goa-badge {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-family: Georgia, serif;
+            font-size: clamp(36px, 7vw, 84px);
+            font-weight: 900;
+            color: #ff1683;
+            background: #ff1683;
+            -webkit-background-clip: text;
+            text-shadow: 
+                0 0 0 #ffd31a,
+                2px 2px 0 #ffd31a,
+                -2px -2px 0 #ffd31a,
+                2px -2px 0 #ffd31a,
+                -2px 2px 0 #ffd31a,
+                0 0 30px rgba(255, 22, 131, 0.9);
+            z-index: 5;
+            animation: popGoa 0.65s cubic-bezier(0.175, 0.885, 0.32, 1.4) 0.5s both;
+            padding: 0 10px;
+        }
+        @keyframes popGoa {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.2) rotate(-12deg); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+        }
+
+        /* Bottom metadata line in intro */
+        .intro-bottom-meta {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.75);
+            font-family: Arial, sans-serif;
+            font-size: clamp(9px, 1.5vw, 13px);
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            z-index: 4;
+            animation: introFadeUp 0.5s ease-out 0.6s both;
+        }
+
+        /* Progress loader bar */
+        .intro-loader-wrap {
+            width: min(340px, 80vw);
+            margin: 22px auto 0;
+            animation: introFadeUp 0.5s ease-out 0.7s both;
+        }
+        .intro-loader-track {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
+        }
+        .intro-loader-bar {
+            height: 100%; width: 0%;
+            background: linear-gradient(90deg, #ffd31a, #ff1683);
+            border-radius: 4px;
+            animation: loadBar 1.25s cubic-bezier(.4,0,.2,1) 0.75s forwards;
+            box-shadow: 0 0 12px #ffd31a;
+        }
+        @keyframes loadBar { 0% { width:0%; } 30% { width:45%; } 70% { width:80%; } 100% { width:100%; } }
+        .intro-loader-label {
+            text-align: center;
+            color: #ffd31a;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 18px;
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 980px;
+        }
+
+        .page-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--magenta);
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 0.65rem;
+            letter-spacing: 1.5px;
+            color: var(--magenta);
+            background: rgba(255, 0, 127, 0.1);
+            text-shadow: 0 0 5px rgba(255, 0, 127, 0.5);
+            animation: eyebrowGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes eyebrowGlow {
+            0% { box-shadow: 0 0 8px rgba(255, 0, 127, 0.15); }
+            100% { box-shadow: 0 0 20px rgba(255, 0, 127, 0.3); }
+        }
+
+        .page-title {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: clamp(1.4rem, 3.5vw, 2rem);
+            letter-spacing: 2px;
+            margin: 8px 0 2px;
+            color: var(--card-green);
+        }
+
+        .page-subtitle {
+            font-family: Arial, sans-serif;
+            color: var(--muted);
+            font-size: 0.8rem;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .container {
+            display: flex;
+            gap: 25px;
+            max-width: 980px;
+            width: 100%;
+            justify-content: center;
+            align-items: stretch;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 20px;
+        }
+
+        /* --- Left: Form (Glassmorphism) --- */
+        .workspace-form {
+            background: rgba(255, 250, 240, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 18px 22px;
+            border-radius: 16px;
+            flex: 1;
+            min-width: 300px;
+            max-width: 400px;
+            border: 1px solid rgba(18, 60, 42, 0.18);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 8px 10px 0 rgba(18,60,42,0.08);
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .workspace-form::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 20%; right: 20%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(250, 204, 21, 0.3), rgba(255, 0, 127, 0.3), transparent);
+        }
+
+        .workspace-form::-webkit-scrollbar { width: 4px; }
+        .workspace-form::-webkit-scrollbar-thumb { background: var(--magenta); border-radius: 4px; }
+
+        .form-group { margin-bottom: 14px; }
+
+        .form-group label {
+            display: block;
+            color: var(--card-green);
+            margin-bottom: 6px;
+            font-weight: bold;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 9px;
+            background-color: rgba(255, 250, 240, 0.95);
+            border: 1px solid var(--line-green);
+            color: var(--card-green);
+            border-radius: 6px;
+            outline: none;
+            font-family: inherit;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus { 
+            border-color: var(--yellow); 
+            box-shadow: 0 0 8px rgba(250, 204, 21, 0.3), 0 0 20px rgba(250, 204, 21, 0.1); 
+            background-color: #fffaf0;
+        }
+
+        .upload-zone {
+            border: 1px dashed var(--line-green);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 250, 240, 0.75);
+        }
+
+        .upload-zone:hover {
+            border-color: var(--magenta);
+            background-color: rgba(255, 0, 127, 0.05);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(255, 0, 127, 0.1);
+        }
+
+        #photoUpload { display: none; }
+
+        .image-controls {
+            display: none;
+            background: rgba(255, 250, 240, 0.85);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid var(--line-green);
+        }
+        
+        .control-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .control-row label {
+            color: var(--text-light);
+            margin: 0;
+            font-size: 0.7rem;
+            width: 40px;
+        }
+        
+        input[type=range] {
+            flex: 1;
+            margin-left: 10px;
+            accent-color: var(--magenta);
+        }
+
+        .pills { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+
+        .pill {
+            background-color: transparent;
+            border: 1px solid var(--line-green);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            color: var(--muted);
+        }
+
+        .pill.active, .pill:hover {
+            background-color: var(--yellow);
+            color: var(--bg-dark);
+            border-color: var(--yellow);
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(250, 204, 21, 0.25);
+        }
+
+        .btn-stamp-action {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--yellow), #e6b800);
+            color: var(--card-green);
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 5px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(250, 204, 21, 0.2);
+            letter-spacing: 1px;
+        }
+        
+        .btn-stamp-action:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(250, 204, 21, 0.35); }
+        .btn-stamp-action:active { transform: scale(0.98) translateY(0); }
+
+        /* ===== Card Flip on Stamp ===== */
+        .badge-perspective { perspective: 1000px; width: 100%; position: relative; margin-bottom: 12px; }
+        .badge-flipper { width: 100%; position: relative; transform-style: preserve-3d; }
+        .badge-flipper.flipping { animation: cardFlip 0.75s cubic-bezier(0.4,0,0.2,1) forwards; }
+        @keyframes cardFlip {
+            0%   { transform: rotateY(0deg) scale(1); }
+            30%  { transform: rotateY(90deg) scale(0.95); }
+            50%  { transform: rotateY(180deg) scale(0.95); }
+            70%  { transform: rotateY(270deg) scale(0.95); }
+            100% { transform: rotateY(360deg) scale(1); }
+        }
+
+        /* ===== CONFETTI CANVAS ===== */
+        #confetti-canvas { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:8000; }
+
+        /* --- Right: Badge Preview --- */
+        .preview-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 380px;
+            justify-content: center;
+        }
+
+        /* --- Actions (Download / Share) — bottom of page --- */
+        .actions {
+            display: flex;
+            gap: 14px;
+            width: 100%;
+            max-width: 760px;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            max-width: 320px;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-family: Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.25s ease;
+            text-transform: uppercase;
+        }
+
+        .btn-download {
+            background: var(--yellow);
+            color: var(--card-green);
+            box-shadow: 0 4px 16px rgba(250,204,21,0.25);
+        }
+        .btn-download:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(250,204,21,0.4); }
+
+        .btn-share {
+            background: var(--magenta);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(255,0,127,0.25);
+        }
+        .btn-share:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,0,127,0.4); }
+
+        /* ===== Card Animations ===== */
+        @keyframes cardFloat {
+            0%   { transform: translateY(0px); }
+            50%  { transform: translateY(-3px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes cardGlow {
+            0% { box-shadow: 0 0 15px rgba(250, 204, 21, 0.3), 0 0 30px rgba(255, 0, 127, 0.2); }
+            50% { box-shadow: 0 0 25px rgba(250, 204, 21, 0.5), 0 0 50px rgba(255, 0, 127, 0.3), 0 15px 40px rgba(0,0,0,0.4); }
+            100% { box-shadow: 0 0 15px rgba(250, 204, 21, 0.3), 0 0 30px rgba(255, 0, 127, 0.2); }
+        }
+
+        /* ===== ID CARD ===== */
+        .badge-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 380 / 530;
+            background-color: var(--card-bottom);
+            border-radius: 20px;
+            border: 3px solid #123c2a;
+            overflow: hidden;
+            user-select: text;
+            display: flex;
+            flex-direction: column;
+            animation: cardFloat 8s ease-in-out infinite, cardGlow 4s ease-in-out infinite;
+            transition: transform 0.3s ease;
+        }
+
+        .badge-container:hover {
+            transform: scale(1.005);
+            box-shadow: 0 0 25px rgba(250, 204, 21, 0.4), 0 0 40px rgba(255, 0, 127, 0.2);
+        }
+
+        /* ===== TOP BANNER — HACK HOUSE GOA ===== */
+        .hh-banner {
+            width: 100%;
+            background: #0f6b46;
+            border-bottom: 2px solid var(--yellow);
+            padding: 6px 10px 5px;
+            position: relative;
+            z-index: 5;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .hh-banner-inner {
+            border: 1.5px solid var(--yellow);
+            border-radius: 6px;
+            padding: 4px 8px 3px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(180deg, #0f6b46 0%, #145930 100%);
+        }
+
+        .hh-banner-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            font-size: 5px;
+            color: var(--yellow);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: bold;
+            opacity: 0.8;
+            margin-bottom: 1px;
+        }
+
+        .hh-banner-main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            line-height: 1;
+        }
+
+        .hh-banner-main .hack-text {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: clamp(16px, 5vw, 24px);
+            font-weight: 900;
+            color: var(--yellow);
+            letter-spacing: 2px;
+        }
+
+        .hh-banner-main .goa-hindi {
+            font-family: Georgia, serif;
+            font-size: clamp(14px, 4.5vw, 20px);
+            font-weight: 900;
+            color: var(--magenta);
+            margin: 0 3px;
+            text-shadow: 0 0 8px rgba(255, 0, 127, 0.5);
+            transform: rotate(-3deg);
+            display: inline-block;
+        }
+
+        .hh-banner-main .house-text {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: clamp(16px, 5vw, 24px);
+            font-weight: 900;
+            color: var(--yellow);
+            letter-spacing: 2px;
+        }
+
+        .hh-banner-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            font-size: 5px;
+            color: var(--yellow);
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            font-weight: bold;
+            opacity: 0.7;
+            margin-top: 1px;
+        }
+
+        /* ===== UNIFIED BADGE BODY ===== */
+        .badge-body {
+            flex: 1;
+            position: relative;
+            background-color: var(--card-bottom);
+            background-image:
+                linear-gradient(rgba(26, 74, 56, 0.22) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(26, 74, 56, 0.22) 1px, transparent 1px);
+            background-size: 18px 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            padding-bottom: 64px;
+        }
+
+        .badge-yellow-circle {
+            position: absolute;
+            top: -15%;
+            right: -15%;
+            width: 45%;
+            aspect-ratio: 1;
+            background-color: var(--yellow);
+            border-radius: 50%;
+            background-image: radial-gradient(circle, rgba(255,0,127,0.2) 10%, transparent 11%), radial-gradient(circle, rgba(255,0,127,0.2) 10%, transparent 11%);
+            background-size: 10px 10px;
+            background-position: 0 0, 5px 5px;
+            z-index: 1;
+        }
+
+        .badge-logo {
+            position: absolute;
+            top: 8%;
+            left: 8%;
+            font-family: Georgia, 'Times New Roman', serif;
+            text-transform: uppercase;
+            z-index: 3;
+        }
+
+        .badge-logo .hh   { color: var(--yellow);    font-size: clamp(17px, 5.5vw, 30px); line-height: 1;   font-weight: bold; }
+        .badge-logo .goa  { color: var(--card-green); font-size: clamp(17px, 5.5vw, 30px); line-height: 1;   font-weight: bold; }
+        .badge-logo .year { color: var(--magenta);    font-size: clamp(14px, 4.5vw, 22px); line-height: 1.1; letter-spacing: 1px; }
+
+        .palm-tree-left {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 85%;
+            opacity: 0.15;
+            z-index: 0;
+        }
+
+        .palm-tree-right {
+            position: absolute;
+            right: 10%;
+            bottom: 5%;
+            height: 90%;
+            opacity: 0.2;
+            z-index: 0;
+        }
+
+        /* ===== ARCH PHOTO (in-flow, centered) ===== */
+        .badge-arch-wrapper {
+            position: relative;
+            width: 50%;
+            aspect-ratio: 200 / 215;
+            border-radius: 100px 100px 0 0;
+            border: 3px solid var(--yellow);
+            overflow: hidden;
+            background-color: var(--bg-dark);
+            z-index: 2;
+            box-shadow: 0 0 15px rgba(250,204,21,0.35);
+            margin-top: 5%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .badge-arch-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transform-origin: center center;
+        }
+
+        /* Name/Role/Title section */
+        .badge-middle {
+            flex: 1;
+            text-align: center;
+            padding: 4px 8px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+        }
+
+        .badge-name {
+            color: var(--card-green);
+            font-family: Georgia, 'Times New Roman', serif;
+            font-weight: bold;
+            font-size: clamp(20px, 6vw, 28px);
+            text-transform: uppercase;
+            line-height: 1.1;
+            margin-bottom: 0;
+        }
+
+        .badge-role {
+            color: var(--magenta);
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 0;
+        }
+
+        .title-cycle {
+            animation: titleSwap .42s cubic-bezier(.22,.61,.36,1);
+        }
+        @keyframes titleSwap {
+            0% { opacity: 0; transform: translateY(7px) scale(.98); filter: blur(2px); }
+            100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        }
+
+        .badge-title-pill {
+            background-color: var(--card-green);
+            color: var(--yellow);
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 10px;
+            margin-bottom: 0;
+        }
+
+        /* Tropical Powered-By Banner — absolutely pinned to bottom edge */
+        .powered-by-banner {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            overflow: hidden;
+            background-color: #fef8e7;
+            border-top: 1px dashed rgba(26, 74, 56, 0.25);
+        }
+        .powered-by-banner img { display: block; width: 100%; height: 100%; object-fit: fill; }
+
+        /* Ticket Stub Footer */
+        .ticket-footer {
+            height: 12%;
+            background-color: var(--card-green);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            position: relative;
+            border-top: 2px dashed rgba(250, 204, 21, 0.6);
+            z-index: 2;
+            flex-shrink: 0;
+        }
+
+        .ticket-footer::before {
+            content: '';
+            position: absolute;
+            left: -4px;
+            top: 0;
+            bottom: 0;
+            width: 8px;
+            background-image: radial-gradient(circle, var(--bg-dark) 3px, transparent 4px);
+            background-size: 10px 14px;
+            background-position: center;
+        }
+
+        .ticket-qr-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ticket-qr-box {
+            width: 38px;
+            height: 38px;
+            border: 2px solid var(--yellow);
+            padding: 2px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ticket-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .ticket-label {
+            color: var(--yellow);
+            font-family: Arial, sans-serif;
+            font-size: 9px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .ticket-id {
+            color: var(--card-bottom);
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            font-weight: bold;
+            margin-top: 2px;
+        }
+
+        .ticket-barcode {
+            width: 40px;
+            height: 24px;
+            background-image: repeating-linear-gradient(to right, var(--card-bottom) 0, var(--card-bottom) 2px, transparent 2px, transparent 4px, var(--card-bottom) 4px, var(--card-bottom) 5px, transparent 5px, transparent 8px);
+            opacity: 0.8;
+        }
+
+        /* Stamp Overlay */
+        .stamp-overlay {
+            position: absolute;
+            top: 50%;
+            right: 4%;
+            width: 20%;
+            aspect-ratio: 1;
+            border: 2px dashed var(--magenta);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--magenta);
+            background: rgba(255, 255, 255, 0.75);
+            font-family: 'Arial Black', sans-serif;
+            font-size: 7px;
+            line-height: 1.1;
+            font-weight: 900;
+            transform: rotate(-20deg) scale(0);
+            opacity: 0;
+            z-index: 10;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-shadow: 0 0 4px rgba(255,0,127,0.4);
+        }
+
+        .stamp-overlay.active { transform: rotate(-20deg) scale(1); opacity: 1; }
+
+        /* Action Buttons */
+        .actions { display: flex; gap: 10px; width: 100%; }
+
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.25s ease;
+        }
+        .btn:hover { opacity: 0.85; transform: translateY(-1px); }
+        .btn:active { transform: translateY(0) scale(0.98); }
+
+        .btn-download { background-color: var(--bg-dark); color: var(--card-green); border: 1px solid var(--yellow); box-shadow: 0 2px 10px rgba(250, 204, 21, 0.1); }
+        .btn-download:hover { box-shadow: 0 4px 20px rgba(250, 204, 21, 0.25); }
+        .btn-share { background: linear-gradient(135deg, var(--magenta), #cc0066); color: white; box-shadow: 0 2px 10px rgba(255,0,127,0.3); }
+        .btn-share:hover { box-shadow: 0 4px 25px rgba(255,0,127,0.45); }
+
+        /* Download loading state */
+        .btn-download.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            body { height: auto; overflow: auto; padding-top: 20px;}
+            .container { flex-direction: column; height: auto; align-items: center; }
+            .workspace-form { width: 100%; max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <!-- ===== INTRO SCREEN (Personalized Builder Pass Generator) ===== -->
+    <div class="intro-screen" id="introScreen">
+        <div class="intro-grid"></div>
+        <div class="intro-scan-beam"></div>
+        <div class="intro-holo-ring"></div>
+
+        <!-- Top Navigation Bar -->
+        <div class="intro-nav">
+            <div class="intro-nav-logo">
+                2:47PM
+                <span>STUDIO</span>
+            </div>
+            <div class="intro-nav-links">
+                <span>CHECK HYPE</span>
+                <div class="intro-apply-btn">APPLY</div>
+            </div>
+        </div>
+
+        <!-- Center Hero Animation -->
+        <div class="intro-center-hero">
+            <div class="intro-pass-badge-pill">✦ BUILDER PASS GENERATOR · MINT YOUR IDENTITY ✦</div>
+            <div class="intro-hero-title">
+                <span class="intro-hacker-text">HACKER</span>
+                <span class="intro-goa-badge">गोवा</span>
+                <span class="intro-house-text">HOUSE</span>
+            </div>
+            
+            <div class="intro-loader-wrap">
+                <div class="intro-loader-track"><div class="intro-loader-bar"></div></div>
+                <div class="intro-loader-label" id="loaderLabel">ENCODING BIOMETRICS...</div>
+            </div>
+        </div>
+
+        <!-- Bottom Metadata -->
+        <div class="intro-bottom-meta">
+            <span>GOA, INDIA · 28 – 31 OCT 2026</span>
+            <span>BUILDER ID MINTING READY</span>
+        </div>
+    </div>
+
+    <!-- Confetti canvas -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="header-section">
+        <div class="page-eyebrow">⚡ HACKER HOUSE GOA 2026 ⚡</div>
+        <h1 class="page-title">Generate Your Pass</h1>
+        <p class="page-subtitle">Upload your photo, adjust the frame, and secure your ID.</p>
+    </div>
+
+    <div class="container">
+        <!-- Form Controls -->
+        <div class="workspace-form">
+            <div class="form-group">
+                <label>◩ 1. BUILDER PHOTO</label>
+                <div class="upload-zone" id="dropZone" onclick="document.getElementById('photoUpload').click()">
+                    <div style="font-size: 1.2rem; color: var(--magenta); margin-bottom: 5px;">[+]</div>
+                    <div style="font-family: Arial; font-weight: bold; font-size: 0.75rem; color: var(--card-green);">Upload Avatar</div>
+                    <input type="file" id="photoUpload" accept="image/png, image/jpeg, image/heic">
+                </div>
+                
+                <div class="image-controls" id="imageControls">
+                    <div class="control-row">
+                        <label>Zoom</label>
+                        <input type="range" id="zoomSlider" min="0.5" max="3" step="0.05" value="1">
+                    </div>
+                    <div class="control-row">
+                        <label>Pan X</label>
+                        <input type="range" id="panXSlider" min="-100" max="100" value="0">
+                    </div>
+                    <div class="control-row">
+                        <label>Pan Y</label>
+                        <input type="range" id="panYSlider" min="-100" max="100" value="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>👤 2. FULL NAME</label>
+                <input type="text" id="nameInput" value="ALOK JHA">
+            </div>
+
+            <div class="form-group">
+                <label>&lt;/&gt; 3. STACK / ROLE</label>
+                <input type="text" id="roleInput" value="Full Stack Developer" placeholder="e.g. AI Engineer">
+                <div class="pills">
+                    <div class="pill active" onclick="setRole('Full Stack Developer', this)">Full Stack Dev</div>
+                    <div class="pill" onclick="setRole('AI Engineer', this)">AI Engineer</div>
+                    <div class="pill" onclick="setRole('Frontend Developer', this)">Frontend Dev</div>
+                    <div class="pill" onclick="setRole('Backend Developer', this)">Backend Dev</div>
+                    <div class="pill" onclick="setRole('Mobile Developer', this)">Mobile Dev</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>🏷️ 4. BUILDER CLASS</label>
+                <input type="text" id="titleInput" value="THE BUILD ARCHITECT" readonly>
+            </div>
+
+            <button class="btn-stamp-action" onclick="applyStamp()">✦ STAMP MY PASS ✦</button>
+        </div>
+
+        <!-- HTML Badge Preview -->
+        <div class="preview-section">
+            <div class="badge-perspective">
+                <div class="badge-flipper" id="badgeFlipper">
+                    <div class="badge-container" id="badgeElement">
+                
+                <!-- ===== HACK HOUSE GOA BANNER ===== -->
+                <div class="hh-banner">
+                    <div class="hh-banner-inner">
+                        <div class="hh-banner-top">
+                            <span>2:47PM STUDIO</span>
+                            <span>★ BUILD • BREAK • BUILD BETTER ★</span>
+                            <span style="color:var(--magenta);">POWERED BY 2:47PM STUDIO</span>
+                        </div>
+                        <div class="hh-banner-main">
+                            <span class="hack-text">HACK</span>
+                            <span class="goa-hindi">गोवा</span>
+                            <span class="house-text">HOUSE</span>
+                        </div>
+                        <div class="hh-banner-bottom">
+                            <span>GOA, INDIA</span>
+                            <span>28 – 31 OCT 2026</span>
+                            <span>2:47 PM STUDIO</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="badge-body">
+                    <!-- Absolute decorations -->
+                    <div class="badge-yellow-circle"></div>
+                    <svg class="palm-tree-left" viewBox="0 0 120 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M55 200V100" stroke="#1a4a38" stroke-width="5"/>
+                        <path d="M55 110C40 90 10 85 5 70C20 78 40 80 55 100Z" fill="#1a4a38"/>
+                        <path d="M55 105C50 80 30 60 15 50C30 60 50 70 55 95Z" fill="#1a4a38"/>
+                        <path d="M55 100C70 80 90 75 105 65C90 75 70 80 55 95Z" fill="#1a4a38"/>
+                        <path d="M55 108C65 85 85 70 100 55C85 70 68 82 55 100Z" fill="#1a4a38"/>
+                        <path d="M55 112C45 95 20 90 5 85C25 90 45 95 55 108Z" fill="#1a4a38"/>
+                        <path d="M55 106C72 90 95 85 115 80C95 88 72 90 55 100Z" fill="#1a4a38"/>
+                    </svg>
+                    <svg class="palm-tree-right" viewBox="0 0 140 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M70 220V95" stroke="#1a4a38" stroke-width="5"/>
+                        <path d="M70 105C55 80 25 70 10 55C30 65 55 72 70 98Z" fill="#1a4a38"/>
+                        <path d="M70 100C60 70 35 50 15 35C38 52 60 65 70 92Z" fill="#1a4a38"/>
+                        <path d="M70 95C85 70 110 60 130 50C110 62 88 70 70 90Z" fill="#1a4a38"/>
+                        <path d="M70 102C82 78 105 65 125 50C105 65 85 75 70 95Z" fill="#1a4a38"/>
+                        <path d="M70 108C55 90 30 85 10 80C35 88 55 92 70 105Z" fill="#1a4a38"/>
+                        <path d="M70 100C88 82 115 78 135 75C115 82 90 85 70 96Z" fill="#1a4a38"/>
+                    </svg>
+                    <div class="badge-logo">
+                        <div class="hh">HH</div>
+                        <div class="goa">GOA</div>
+                        <div class="year">2026</div>
+                    </div>
+
+                    <!-- Stamp (absolute, right side of photo) -->
+                    <div class="stamp-overlay" id="verifiedStamp">SYSTEM<br>VERIFIED</div>
+
+                    <!-- Arch photo (in-flow, centered) -->
+                    <div class="badge-arch-wrapper">
+                        <img id="displayPhoto" src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='240' viewBox='0 0 200 240'%3E%3Crect fill='%230a271d' width='200' height='240'/%3E%3Ccircle cx='100' cy='90' r='40' fill='%231a4a38'/%3E%3Cpath d='M40,240 Q100,160 160,240' stroke='%231a4a38' stroke-width='40' stroke-linecap='round' fill='none'/%3E%3C/svg%3E" alt="Builder Photo">
+                    </div>
+
+                    <!-- Name / Role / Title (in-flow below arch) -->
+                    <div class="badge-middle">
+                        <div class="badge-name" id="displayName">ALOK JHA</div>
+                        <div class="badge-role" id="displayRole">FULL STACK DEVELOPER</div>
+                        <div class="badge-title-pill">&lt; <span id="displayTitle">THE BUILD ARCHITECT</span> /&gt;</div>
+                    </div>
+
+                    <!-- Powered By Tropical Banner (pushed to bottom) -->
+                    <div class="powered-by-banner">
+                        <img src="powered-by-banner.png" alt="Powered By 2:47 PM Studio">
+                    </div><!-- powered-by-banner -->
+
+
+                </div><!-- /.badge-body -->
+
+
+                <div class="ticket-footer">
+                    <div class="ticket-qr-wrap">
+                        <div class="ticket-qr-box">
+                            <svg viewBox="0 0 50 50" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="50" height="50" fill="white"/>
+                                <rect x="2" y="2" width="12" height="12" fill="black"/><rect x="4" y="4" width="8" height="8" fill="white"/><rect x="5.5" y="5.5" width="5" height="5" fill="black"/>
+                                <rect x="36" y="2" width="12" height="12" fill="black"/><rect x="38" y="4" width="8" height="8" fill="white"/><rect x="39.5" y="5.5" width="5" height="5" fill="black"/>
+                                <rect x="2" y="36" width="12" height="12" fill="black"/><rect x="4" y="38" width="8" height="8" fill="white"/><rect x="5.5" y="39.5" width="5" height="5" fill="black"/>
+                                <rect x="16" y="2" width="2" height="2" fill="black"/><rect x="20" y="2" width="2" height="2" fill="black"/><rect x="24" y="4" width="2" height="2" fill="black"/>
+                                <rect x="28" y="2" width="2" height="2" fill="black"/><rect x="32" y="6" width="2" height="2" fill="black"/><rect x="16" y="6" width="2" height="2" fill="black"/>
+                                <rect x="22" y="8" width="2" height="2" fill="black"/><rect x="26" y="6" width="2" height="2" fill="black"/><rect x="30" y="10" width="2" height="2" fill="black"/>
+                                <rect x="18" y="10" width="2" height="2" fill="black"/><rect x="16" y="16" width="2" height="2" fill="black"/><rect x="18" y="20" width="2" height="2" fill="black"/>
+                                <rect x="20" y="18" width="2" height="2" fill="black"/><rect x="24" y="16" width="2" height="2" fill="black"/><rect x="28" y="20" width="2" height="2" fill="black"/>
+                                <rect x="32" y="18" width="2" height="2" fill="black"/><rect x="36" y="16" width="2" height="2" fill="black"/><rect x="40" y="20" width="2" height="2" fill="black"/>
+                                <rect x="44" y="18" width="2" height="2" fill="black"/><rect x="2" y="16" width="2" height="2" fill="black"/><rect x="6" y="18" width="2" height="2" fill="black"/>
+                                <rect x="10" y="20" width="2" height="2" fill="black"/><rect x="4" y="22" width="2" height="2" fill="black"/><rect x="8" y="24" width="2" height="2" fill="black"/>
+                                <rect x="12" y="22" width="2" height="2" fill="black"/><rect x="22" y="24" width="2" height="2" fill="black"/><rect x="26" y="22" width="2" height="2" fill="black"/>
+                                <rect x="30" y="26" width="2" height="2" fill="black"/><rect x="34" y="24" width="2" height="2" fill="black"/><rect x="38" y="28" width="2" height="2" fill="black"/>
+                                <rect x="42" y="26" width="2" height="2" fill="black"/><rect x="46" y="24" width="2" height="2" fill="black"/><rect x="16" y="28" width="2" height="2" fill="black"/>
+                                <rect x="20" y="30" width="2" height="2" fill="black"/><rect x="24" y="28" width="2" height="2" fill="black"/><rect x="28" y="32" width="2" height="2" fill="black"/>
+                                <rect x="32" y="30" width="2" height="2" fill="black"/><rect x="2" y="28" width="2" height="2" fill="black"/><rect x="6" y="30" width="2" height="2" fill="black"/>
+                                <rect x="10" y="32" width="2" height="2" fill="black"/><rect x="36" y="36" width="2" height="2" fill="black"/><rect x="40" y="38" width="2" height="2" fill="black"/>
+                                <rect x="44" y="36" width="2" height="2" fill="black"/><rect x="38" y="42" width="2" height="2" fill="black"/><rect x="42" y="40" width="2" height="2" fill="black"/>
+                                <rect x="46" y="44" width="2" height="2" fill="black"/><rect x="36" y="46" width="2" height="2" fill="black"/><rect x="40" y="44" width="2" height="2" fill="black"/>
+                                <rect x="44" y="42" width="2" height="2" fill="black"/><rect x="16" y="34" width="2" height="2" fill="black"/><rect x="20" y="36" width="2" height="2" fill="black"/>
+                                <rect x="24" y="38" width="2" height="2" fill="black"/><rect x="28" y="40" width="2" height="2" fill="black"/><rect x="16" y="42" width="2" height="2" fill="black"/>
+                                <rect x="20" y="44" width="2" height="2" fill="black"/><rect x="24" y="46" width="2" height="2" fill="black"/><rect x="30" y="44" width="2" height="2" fill="black"/>
+                            </svg>
+                        </div>
+                        <div class="ticket-info">
+                            <div class="ticket-label">BUILDER ID</div>
+                            <div class="ticket-id" id="displayId">#HH-GOA-0000</div>
+                        </div>
+                    </div>
+                    <div class="ticket-barcode"></div>
+                </div>
+            </div>
+
+                    </div><!-- /.badge-container -->
+                </div><!-- /.badge-flipper -->
+            </div><!-- /.badge-perspective -->
+
+        </div><!-- /.preview-section -->
+    </div><!-- /.container -->
+
+    <!-- Download / Share buttons — centered below everything -->
+    <div class="actions">
+        <button class="btn btn-download" id="btnDownload" onclick="downloadPass()">📥 DOWNLOAD</button>
+        <button class="btn btn-share" onclick="shareOnX()">𝕏 SHARE</button>
+    </div>
+
+    <script>
+        /* ===== DOM refs ===== */
+        const nameInput    = document.getElementById('nameInput');
+        const roleInput    = document.getElementById('roleInput');
+        const titleInput   = document.getElementById('titleInput');
+        const displayName  = document.getElementById('displayName');
+        const displayRole  = document.getElementById('displayRole');
+        const displayTitle = document.getElementById('displayTitle');
+        const displayId    = document.getElementById('displayId');
+        const photoUpload  = document.getElementById('photoUpload');
+        const dropZone     = document.getElementById('dropZone');
+        const displayPhoto = document.getElementById('displayPhoto');
+        const verifiedStamp = document.getElementById('verifiedStamp');
+        const imageControls = document.getElementById('imageControls');
+        const zoomSlider   = document.getElementById('zoomSlider');
+        const panXSlider   = document.getElementById('panXSlider');
+        const panYSlider   = document.getElementById('panYSlider');
+        const badgeFlipper = document.getElementById('badgeFlipper');
+        const badgeElement = document.getElementById('badgeElement');
+
+        /* ===== Init ID ===== */
+        displayId.innerText = '#HH-GOA-' + Math.floor(1000 + Math.random() * 9000);
+
+        /* ===== Role → Builder Class map ===== */
+        const roleTitleMap = [
+            { test: /mern/i,                                                         title: 'THE MERN MERCENARY' },
+            { test: /mean/i,                                                         title: 'THE ANGULAR ARCHER' },
+            { test: /full.?stack/i,                                                  title: 'THE PRODUCT SHIPPER' },
+            { test: /ai|ml|machine learning|deep learning|llm|genai/i,               title: 'THE MODEL TAMER' },
+            { test: /cyber|security|ethical hack/i,                                  title: 'THE SYSTEM GUARDIAN' },
+            { test: /front.?end|ui|ux|react|vue|svelte/i,                            title: 'THE PIXEL ARCHITECT' },
+            { test: /back.?end|api|node|django|fastapi|express/i,                    title: 'THE API ALCHEMIST' },
+            { test: /devops|cloud|infra|sre|k8s|kubernetes|docker/i,                title: 'THE DEPLOYMENT WIZARD' },
+            { test: /product|pm|program manager/i,                                   title: 'THE IDEA SHIPPER' },
+            { test: /blockchain|web3|crypto|solidity|nft/i,                          title: 'THE CHAIN BUILDER' },
+            { test: /mobile|ios|android|flutter|react native|swift|kotlin/i,        title: 'THE APP CRAFTER' },
+            { test: /data|analytics|bi|power bi/i,                                   title: 'THE DATA WHISPERER' },
+            { test: /design|figma|graphic|brand/i,                                   title: 'THE DESIGN ALCHEMIST' },
+            { test: /java|spring/i,                                                  title: 'THE ENTERPRISE ARCHITECT' },
+            { test: /python/i,                                                       title: 'THE PYTHON SORCERER' },
+            { test: /database|sql|postgres|mysql|mongo/i,                            title: 'THE DATA ARCHITECT' },
+            { test: /qa|test|quality/i,                                              title: 'THE BUG HUNTER' },
+            { test: /founder|ceo|startup/i,                                          title: 'THE VISION CARRIER' },
+            { test: /hacker/i,                                                       title: 'THE MIDNIGHT HACKER' },
+            { test: /software|developer|engineer|programmer|coder/i,                title: 'THE BUILD ARCHITECT' },
+        ];
+        const defaultBuilderTitle = 'THE CODE ARTISAN';
+
+        function getBuilderTitle(role) {
+            const match = roleTitleMap.find(item => item.test.test(role || ''));
+            return match ? match.title : defaultBuilderTitle;
+        }
+
+        function updateBuilderTitle() {
+            const nextTitle = getBuilderTitle(roleInput.value);
+            titleInput.value = nextTitle;
+            displayTitle.classList.remove('title-cycle');
+            void displayTitle.offsetWidth;
+            displayTitle.classList.add('title-cycle');
+            displayTitle.innerText = nextTitle;
+        }
+
+        updateBuilderTitle();
+
+        function updateText() {
+            displayName.innerText = nameInput.value.toUpperCase() || 'ALOK JHA';
+            displayRole.innerText = roleInput.value.toUpperCase() || 'FULL STACK DEVELOPER';
+            verifiedStamp.classList.remove('active');
+        }
+
+        nameInput.addEventListener('input', updateText);
+        roleInput.addEventListener('input', () => { updateText(); updateBuilderTitle(); });
+
+        function setRole(role, element) {
+            roleInput.value = role;
+            document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+            element.classList.add('active');
+            updateText();
+            updateBuilderTitle();
+        }
+
+        /* ===== Image controls ===== */
+        function updateTransform() {
+            const scale = zoomSlider.value;
+            const x = panXSlider.value;
+            const y = panYSlider.value;
+            displayPhoto.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+        }
+
+        zoomSlider.addEventListener('input', updateTransform);
+        panXSlider.addEventListener('input', updateTransform);
+        panYSlider.addEventListener('input', updateTransform);
+
+        function handleFile(file) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                displayPhoto.src = event.target.result;
+                verifiedStamp.classList.remove('active');
+                imageControls.style.display = 'block';
+                zoomSlider.value = 1;
+                panXSlider.value = 0;
+                panYSlider.value = 0;
+                updateTransform();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        photoUpload.addEventListener('change', (e) => handleFile(e.target.files[0]));
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.borderColor = 'var(--magenta)'; });
+        dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = ''; });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '';
+            handleFile(e.dataTransfer.files[0]);
+        });
+
+        /* ===== CONFETTI ===== */
+        function launchConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const colors = ['#ffd31a','#ff1683','#123c2a','#ffffff','#ff9f2f','#00e5ff'];
+            const pieces = [];
+            for (let i = 0; i < 160; i++) {
+                pieces.push({
+                    x: Math.random() * canvas.width,
+                    y: -10 - Math.random() * 40,
+                    w: 6 + Math.random() * 8,
+                    h: 3 + Math.random() * 5,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    rotation: Math.random() * 360,
+                    rotSpeed: (Math.random() - 0.5) * 8,
+                    vx: (Math.random() - 0.5) * 4,
+                    vy: 3 + Math.random() * 5,
+                    opacity: 1
+                });
+            }
+            let frame;
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let alive = false;
+                pieces.forEach(p => {
+                    p.x += p.vx; p.y += p.vy; p.vy += 0.08; p.rotation += p.rotSpeed;
+                    if (p.y > canvas.height * 0.8) p.opacity -= 0.025;
+                    if (p.opacity > 0) alive = true;
+                    ctx.save();
+                    ctx.globalAlpha = Math.max(0, p.opacity);
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate((p.rotation * Math.PI) / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+                    ctx.restore();
+                });
+                if (alive) frame = requestAnimationFrame(draw);
+                else ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            if (frame) cancelAnimationFrame(frame);
+            draw();
+        }
+
+        /* ===== Stamp ===== */
+        function applyStamp() {
+            if (!nameInput.value.trim()) {
+                nameInput.focus();
+                nameInput.style.borderColor = 'var(--magenta)';
+                setTimeout(() => nameInput.style.borderColor = '', 1200);
+                return;
+            }
+            // Card flip
+            badgeFlipper.classList.remove('flipping');
+            void badgeFlipper.offsetWidth;
+            badgeFlipper.classList.add('flipping');
+            // Show stamp at midpoint
+            setTimeout(() => { verifiedStamp.classList.add('active'); }, 370);
+            badgeFlipper.addEventListener('animationend', () => badgeFlipper.classList.remove('flipping'), { once: true });
+            // Confetti!
+            launchConfetti();
+        }
+
+        /* ===== Download ===== */
+        async function downloadPass() {
+            if (!verifiedStamp.classList.contains('active')) {
+                alert("Please click 'STAMP MY PASS' first!");
+                return;
+            }
+            const btn = document.getElementById('btnDownload');
+            btn.classList.add('loading');
+            btn.innerText = '⏳ GENERATING...';
+            const origAnimation = badgeElement.style.animation;
+            const origTransform = badgeElement.style.transform;
+            const origTransition = badgeElement.style.transition;
+            badgeElement.style.animation = 'none';
+            badgeElement.style.transform = 'none';
+            badgeElement.style.transition = 'none';
+            badgeElement.offsetHeight;
+            await new Promise(r => setTimeout(r, 150));
+            try {
+                const canvas = await html2canvas(badgeElement, {
+                    scale: 3, backgroundColor: null, useCORS: true, allowTaint: true, logging: false,
+                    width: badgeElement.offsetWidth, height: badgeElement.offsetHeight,
+                    x: 0, y: 0, scrollX: 0, scrollY: 0,
+                    windowWidth: badgeElement.offsetWidth, windowHeight: badgeElement.offsetHeight,
+                });
+                const link = document.createElement('a');
+                link.download = `HH_Goa_2026_${nameInput.value.replace(/\s+/g,'_')}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            } catch (err) {
+                console.error('Download failed:', err);
+                alert('Download failed. Please try again.');
+            } finally {
+                badgeElement.style.animation = origAnimation;
+                badgeElement.style.transform = origTransform;
+                badgeElement.style.transition = origTransition;
+                btn.classList.remove('loading');
+                btn.innerText = '📥 DOWNLOAD';
+            }
+        }
+
+        /* ===== Share on X ===== */
+        function shareOnX() {
+            if (!verifiedStamp.classList.contains('active')) {
+                alert("Please click 'STAMP MY PASS' first!");
+                return;
+            }
+            const builderName  = nameInput.value.toUpperCase() || 'BUILDER';
+            const builderRole  = roleInput.value || 'Builder';
+            const builderTitle = titleInput.value.toUpperCase() || 'THE BUILD ARCHITECT';
+            const builderId    = displayId.innerText;
+            const caption = `🚀 Just minted my Builder Pass for Hack House Goa 2026!\n\n🪴 ${builderName} — ${builderRole}\n⚡ Class: ${builderTitle}\n🆔 ${builderId}\n\n48 hours. One mission. Ship or get shipped. 🌴\n\nSee you in Goa. Let's build the future.\n\n#HHGoa2026 #FrameInGoa #BuildInGoa #HackerHouseGoa`;
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(caption)}`, '_blank');
+        }
+
+        /* ===== Intro spark particles ===== */
+        (function spawnSparks() {
+            const container = document.getElementById('introSparks');
+            if (!container) return;
+            const sparkColors = ['#ffd31a','#ff1683','#ffffff'];
+            for (let i = 0; i < 30; i++) {
+                const s = document.createElement('div');
+                s.className = 'spark';
+                const angle = Math.random() * 360;
+                const dist  = 80 + Math.random() * 200;
+                s.style.cssText = `
+                    --dur: ${0.6 + Math.random() * 1.2}s;
+                    --delay: ${0.3 + Math.random() * 1.2}s;
+                    --x: ${40 + Math.random() * 20}vw;
+                    --y: ${30 + Math.random() * 40}vh;
+                    --tx: ${Math.cos(angle * Math.PI/180) * dist}px;
+                    --ty: ${Math.sin(angle * Math.PI/180) * dist}px;
+                    background: ${sparkColors[Math.floor(Math.random() * sparkColors.length)]};
+                    width: ${1 + Math.random() * 3}px;
+                    height: ${1 + Math.random() * 3}px;
+                `;
+                container.appendChild(s);
+            }
+        })();
+
+        /* ===== Loader label steps ===== */
+        (function animateLoader() {
+            const label = document.getElementById('loaderLabel');
+            if (!label) return;
+            const steps = ['BOOTING FRAMEWORK...','SCANNING BIOMETRICS...','MINTING BUILDER ID...','ACCESS GRANTED ✶'];
+            let i = 0;
+            const iv = setInterval(() => {
+                i++;
+                if (i >= steps.length) { clearInterval(iv); return; }
+                label.innerText = steps[i];
+            }, 420);
+        })();
+
+        /* ===== Dismiss intro after 2.6s ===== */
+        setTimeout(() => {
+            const intro = document.getElementById('introScreen');
+            if (intro) intro.classList.add('hide');
+            document.body.style.overflow = 'auto';
+        }, 2600);
+    </script>
+</body>
+</html>

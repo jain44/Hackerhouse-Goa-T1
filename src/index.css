@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+@theme {
+  --color-midnight: #fff8e9;
+  --color-card-bg: #fffaf0;
+  --color-lime: #ffd31a;
+  --color-lime-dim: #e7bb00;
+  --color-goa-orange: #ff8c42;
+  --color-ocean-blue: #00d4ff;
+  --color-warm-yellow: #ffd700;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+/* Base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #fff8e9;
+  color: #123c2a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Selection color */
+::selection {
+  background: rgba(255, 22, 131, 0.18);
+  color: #123c2a;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fff8e9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #b5c5b9;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #123c2a;
+}
+
+/* Focus visible styles */
+*:focus-visible {
+  outline: 2px solid rgba(255, 22, 131, 0.55);
+  outline-offset: 2px;
+}
+
+/* Input autofill styling */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #123c2a;
+  -webkit-box-shadow: 0 0 0px 1000px #fffaf0 inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Card export styles - ensure clean export */
+#card-export-container {
+  display: inline-block;
+}
+
+/* Noise texture keyframe */
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-5%, -10%); }
+  20% { transform: translate(-15%, 5%); }
+  30% { transform: translate(7%, -25%); }
+  40% { transform: translate(-5%, 25%); }
+  50% { transform: translate(-15%, 10%); }
+  60% { transform: translate(15%, 0%); }
+  70% { transform: translate(0%, 15%); }
+  80% { transform: translate(3%, 35%); }
+  90% { transform: translate(-10%, 10%); }
+}
+
+/* Subtle pulse animation */
+@keyframes subtle-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.animate-subtle-pulse {
+  animation: subtle-pulse 2s ease-in-out infinite;
+}
+
+/* Glow effect */
+.glow-lime {
+  box-shadow: 0 0 60px rgba(200, 255, 0, 0.12), 0 0 120px rgba(200, 255, 0, 0.05);
+}
+
+/* Card hover tilt */
+.card-perspective {
+  perspective: 1000px;
+}
+
+/* Hide scrollbar on mobile for horizontal scrolling */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
