@@ -518,7 +518,7 @@ export default function IDCard({
                 marginTop: '2px',
               }}
             >
-              #{serialNumber}
+              # {serialNumber}
             </div>
           </div>
         </div>
