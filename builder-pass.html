@@ -1479,6 +1479,44 @@
             }
         }
 
+        /* ===== Toast helper ===== */
+        function showToast(msg) {
+            let toast = document.getElementById('hhToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'hhToast';
+                toast.style.cssText = `
+                    position: fixed;
+                    bottom: 24px;
+                    left: 50%;
+                    transform: translateX(-50%) translateY(20px);
+                    background: #123c2a;
+                    color: #fff8e9;
+                    border: 2px solid #ffd31a;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.35), 4px 4px 0 #ff1683;
+                    padding: 14px 22px;
+                    border-radius: 14px;
+                    font-size: 13px;
+                    font-family: inherit;
+                    font-weight: bold;
+                    z-index: 99999;
+                    opacity: 0;
+                    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    max-width: 90vw;
+                    text-align: center;
+                    pointer-events: none;
+                `;
+                document.body.appendChild(toast);
+            }
+            toast.innerText = msg;
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateX(-50%) translateY(0)';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(-50%) translateY(20px)';
+            }, 6000);
+        }
+
         /* ===== Share on X ===== */
         async function shareOnX() {
             if (!verifiedStamp.classList.contains('active')) {
@@ -1520,25 +1558,16 @@
                 const uInt8Array = new Uint8Array(raw.length);
                 for (let i = 0; i < raw.length; ++i) { uInt8Array[i] = raw.charCodeAt(i); }
                 const blob = new Blob([uInt8Array], { type: 'image/png' });
-                const file = new File([blob], filename, { type: 'image/png' });
 
-                // Try Web Share API (mobile/Safari)
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    try {
-                        await navigator.share({ files: [file], title: 'HH Goa 2026 Builder Pass', text: caption });
-                        return;
-                    } catch (e) {
-                        if (e.name === 'AbortError') return;
-                    }
-                }
-
-                // Fallback: download PNG file
+                // 1. Download PNG file automatically
                 const link = document.createElement('a');
                 link.download = filename;
                 link.href = dataUrl;
+                document.body.appendChild(link);
                 link.click();
+                document.body.removeChild(link);
 
-                // Try copying PNG to clipboard
+                // 2. Copy PNG image blob to clipboard if supported
                 let copied = false;
                 if (navigator.clipboard && window.ClipboardItem) {
                     try {
@@ -1547,12 +1576,15 @@
                     } catch (err) {}
                 }
 
-                alert(copied 
-                    ? "📸 PNG ID Card downloaded & copied to clipboard!\n\nPress Ctrl+V (or Cmd+V) to paste your ID Card directly into your tweet when X opens."
-                    : "📥 PNG ID Card downloaded!\n\nAttach the downloaded PNG file to your post when X opens."
+                // 3. Open X / Twitter Web Intent directly with pre-filled tweet
+                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(caption)}`, '_blank');
+
+                // 4. Show on-screen toast
+                showToast(copied 
+                    ? "📸 PNG Card downloaded & copied! Press Ctrl+V (or Cmd+V) to paste the card into your post."
+                    : "📥 PNG Card downloaded! Attach the downloaded PNG to your post on X."
                 );
 
-                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(caption)}`, '_blank');
             } catch (err) {
                 console.error('Share image failed:', err);
                 window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(caption)}`, '_blank');
